@@ -71,7 +71,11 @@ public class PrimaryController {
 		File dir = new File(ovpn_dir);
 		File[] cfg_files = dir.listFiles((d, name) -> name.endsWith(".ovpn"));
 			
-
+		//clearing previous entries before adding new ones to list
+		//configList.getSelectionModel().clearSelection();
+		//configList.getItems().clear();
+		
+		//adding new config files to list
 		for (File ovpn : cfg_files) {
 			System.out.println("Found config " + ovpn + ". Adding to list.");
 			configList.getItems().add(new Label(ovpn.getName()));    

@@ -34,6 +34,13 @@ public class Main extends Application {
 		String home_dir = System.getProperty("user.home");
 		String ovpn_dir = home_dir + "/.openvpn-gui/";
 		
+		//do we have sudo rights?
+		//if(System.getProperty("user.name") != "root") {
+		//	System.out.println("User '" + System.getProperty("user.name") + "' doesn't have sudo rights");
+		//	JOptionPane.showMessageDialog(null, "Programm vajab oma tööks root õiguseid. Palun kasuta sudo.");
+		//	System.exit(0);
+		//}
+		
 		//checking if openvpn-gui existing
 		if (Files.isDirectory(Paths.get(ovpn_dir))) {
 			//not a first launch

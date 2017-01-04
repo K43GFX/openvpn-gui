@@ -261,9 +261,21 @@ public class PrimaryController{
     		//retrieving new IP's
     		Thread.sleep(1000);
     		Platform.runLater(() -> LoaderStatus.setText("Kasutajaliidese IP väärtuste uuendamine"));
-    		Thread.sleep(2000);
+    		Thread.sleep(3000);
     		Platform.runLater(() -> internalIP.setText(Global.getInternalIP()));
     		Platform.runLater(() -> externalIP.setText(Global.getExternalIP()));
+    		
+    		Thread.sleep(1000);
+    		//all set. Let's update interface
+    		Platform.runLater(() -> LoaderStatus.setVisible(false));
+    		Platform.runLater(() -> LoaderTitle.setVisible(false));
+    		Platform.runLater(() -> LoaderSpinner.setVisible(false));
+    		Platform.runLater(() -> connectButton.setVisible(false));
+    		Platform.runLater(() -> configList.setVisible(false));
+    		Platform.runLater(() -> terminateOVPN.setVisible(true));
+    		Platform.runLater(() -> plskilme.setText("Aktiivne ühendus serverisse " + chosen_config));
+    		Platform.runLater(() -> terminateOVPN.setText("Katkesta ühendus serveriga"));
+    		Platform.runLater(() -> plskilme.setVisible(true));
     		
     		} catch(Exception kala) {
     			Platform.runLater(() -> LoaderStatus.setText("Tunneli loomine ebaõnnestus"));

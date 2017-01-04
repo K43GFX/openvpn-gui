@@ -86,11 +86,6 @@ public class Main extends Application {
 			System.exit(0);
 		}
 		
-		//So good so far. Let's try to find some IP's now
-		
-		System.out.println("Discovered external IP " + Global.getExternalIP());
-		System.out.println("Discovered internal IP " + Global.getInternalIP());
-		
 		//Launch UI
 		System.out.println("Firing up our GUI.");
 		launch();

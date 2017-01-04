@@ -1,6 +1,8 @@
 package app;
 
 import java.io.File;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -60,6 +62,7 @@ public class PrimaryController {
     	
     	//adding configuration files to combobox
     	populateConfigs();
+    	ovpnRunning();
     }
     
     public void populateConfigs() {
@@ -81,6 +84,27 @@ public class PrimaryController {
 			configList.getItems().add(new Label(ovpn.getName()));    
 		}
 		
+    }
+    
+    public boolean ovpnRunning() {
+    	
+    	//I usually have vpn tunnel on tun0. Let's check if it's established.
+    	try {
+    		NetworkInterface networkInterface = NetworkInterface.getByName("tun0");
+    		
+    		if(networkInterface != null) {
+    			//tun0 already established
+    			System.out.println("tun0 interface established. Fuck.");
+    			return false;
+    		} else {
+    			System.out.println("tun0 interface unused. Good.");
+    			return true;
+    		}
+    		
+		} catch (Exception kala) {
+			System.out.println("Couldn't get network interfaces");
+		}
+    	return true;
     }
 
 }

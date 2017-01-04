@@ -20,7 +20,7 @@ public class Global {
 					new InputStreamReader(aws.openStream()));
 
 			ip = in.readLine(); //gotcha
-			//System.out.println("Discovered external ip: " + ip);
+			System.out.println("Discovered external ip: " + ip);
 			
 		} catch(Exception kala) {
 			ip = "N/A";
@@ -40,10 +40,10 @@ public class Global {
 			ip = socket.getLocalAddress().getHostAddress();
 
 		} catch(Exception kala) {
-			System.out.println("putsis");
+			System.out.println("Internal IP error");
 			ip = "127.0.0.1"; //lol
 		}
-		//System.out.println("Discovered internal ip: " + ip);
+		System.out.println("Discovered internal ip: " + ip);
 		return ip;
 	}
 	

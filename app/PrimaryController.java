@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXSpinner;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,11 +37,56 @@ public class PrimaryController{
     private Hyperlink ConfLink;
 
     @FXML
+    private JFXSpinner LoaderSpinner;
+
+    @FXML
+    private Label LoaderStatus;
+
+    @FXML
+    private Label LoaderTitle;
+    
+    @FXML
     private JFXComboBox<Label> configList;
     
     @FXML
     void establishConnection(ActionEvent event) {
-    	System.out.println("Proov");
+    	
+    	String chosen_config = configList.getSelectionModel().getSelectedItem().getText().toString();
+    	System.out.println("-------");
+    	System.out.println("Trying to establish connection to " + chosen_config);
+    	
+    	//hiding unneeded elements
+    	connectButton.setVisible(false);
+    	configList.setVisible(false);
+    	ConfLink.setVisible(false);
+    	
+    	//and showing stuff we need
+    	LoaderSpinner.setVisible(true);
+    	LoaderTitle.setVisible(true);
+    	LoaderStatus.setVisible(true);
+    	
+    	//changing text of labels
+    	LoaderTitle.setText("Tunneli loomine serverisse " + chosen_config + "...");
+    	LoaderStatus.setText("loon ühendust serveriga");
+    	
+    	//launching openvpn daemon
+
+		String home_dir = System.getProperty("user.home");
+		String ovpn_dir = home_dir + "/.openvpn-gui/";
+    	String launch_cmd = "screen -dmSL openvpn-gui openvpn " + ovpn_dir + chosen_config;
+    	System.out.println("Attempting to launch openvpn with '" + launch_cmd + "'");
+    	try {
+        	Process p = Runtime.getRuntime().exec(launch_cmd);
+            p.waitFor();
+    	} catch (Exception kala) {
+    		System.out.println(kala);
+    	}
+    	
+    	File logfile = new File("screenlog.0");
+    	
+    	if(logfile.isFile()) {
+    		System.out.println("Logfile in " + logfile.getAbsolutePath());
+    	};
     }
 
     @FXML
@@ -56,7 +102,8 @@ public class PrimaryController{
 			//Desktop.* not working in Ubuntu? :/
 			Runtime.getRuntime().exec("nautilus " + ovpn_dir);
 			System.out.println("Successfully opened conf dir");
-		} catch(Exception kala) {
+			
+		} catch (Exception kala) {
 			System.out.println(kala);
 			System.out.println("Conf dir open failed: " + kala);
 		}
@@ -69,6 +116,12 @@ public class PrimaryController{
     	//Setting IP's in UI
     	externalIP.setText(Global.getExternalIP());
     	internalIP.setText("Sisevõrgu IP: " + Global.getInternalIP());
+    	
+    	//hiding some items that we don't need at the moment
+    	LoaderSpinner.setVisible(false);
+    	LoaderTitle.setVisible(false);
+    	LoaderStatus.setVisible(false);
+    	
     	
     	//checking if OpenVPN running
     	
@@ -85,6 +138,11 @@ public class PrimaryController{
     		
     		//adding config files to combobox
     		populateConfigs();
+    		
+    		//automatically selecting first one
+    		configList.getSelectionModel().select(0);
+    		String chosen_config = configList.getSelectionModel().getSelectedItem().getText().toString();
+    		System.out.println("Selected " + chosen_config + " as default option");
     	}
     }
     

@@ -11,6 +11,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXSpinner;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
@@ -48,9 +50,10 @@ public class PrimaryController{
     @FXML
     private JFXComboBox<Label> configList;
     
-    @FXML
-    void establishConnection(ActionEvent event) {
+	@FXML
+    void establishConnection(ActionEvent event) throws InterruptedException {
     	
+		
     	String chosen_config = configList.getSelectionModel().getSelectedItem().getText().toString();
     	System.out.println("-------");
     	System.out.println("Trying to establish connection to " + chosen_config);
@@ -69,24 +72,9 @@ public class PrimaryController{
     	LoaderTitle.setText("Tunneli loomine serverisse " + chosen_config + "...");
     	LoaderStatus.setText("loon ühendust serveriga");
     	
+		
     	//launching openvpn daemon
-
-		String home_dir = System.getProperty("user.home");
-		String ovpn_dir = home_dir + "/.openvpn-gui/";
-    	String launch_cmd = "screen -dmSL openvpn-gui openvpn " + ovpn_dir + chosen_config;
-    	System.out.println("Attempting to launch openvpn with '" + launch_cmd + "'");
-    	try {
-        	Process p = Runtime.getRuntime().exec(launch_cmd);
-            p.waitFor();
-    	} catch (Exception kala) {
-    		System.out.println(kala);
-    	}
-    	
-    	File logfile = new File("screenlog.0");
-    	
-    	if(logfile.isFile()) {
-    		System.out.println("Logfile in " + logfile.getAbsolutePath());
-    	};
+    	new Thread(ovpnDaemon).start();
     }
 
     @FXML
@@ -154,10 +142,6 @@ public class PrimaryController{
 		
 		File dir = new File(ovpn_dir);
 		File[] cfg_files = dir.listFiles((d, name) -> name.endsWith(".ovpn"));
-			
-		//clearing previous entries before adding new ones to list
-		//configList.getSelectionModel().clearSelection();
-		//configList.getItems().clear();
 		
 		//adding new config files to list
 		for (File ovpn : cfg_files) {
@@ -191,7 +175,7 @@ public class PrimaryController{
 		}
     }
     @FXML
-    void terminateOVPN(ActionEvent event) {
+    void terminateOVPN(ActionEvent event) throws InterruptedException {
     	
     	//It could be previous openvpn. kill().
 		try {
@@ -216,18 +200,88 @@ public class PrimaryController{
 			System.out.println(kala);
 			System.exit(0);
 		}
+    	
 		
+		//adding config entries
+		populateConfigs();
+		
+    	new Thread(updateIP).start();
+		
+		configList.getSelectionModel().select(0);
+		String chosen_config = configList.getSelectionModel().getSelectedItem().getText().toString();
+		System.out.println("Selected " + chosen_config + " as default option");
+    	
 		//resetting view
 		plskilme.setVisible(false);
 		terminateOVPN.setVisible(false);
 		connectButton.setVisible(true);
 		configList.setVisible(true);
 		
-		//adding config entries
-		populateConfigs();
-		
 		System.out.println("Showing main interface");
     	
     }
+    
+    Task<Void> ovpnDaemon = new Task<Void>() {
+        @Override public Void call() {
+
+        	String home_dir = System.getProperty("user.home");
+        	String ovpn_dir = home_dir + "/.openvpn-gui/";
+        	String chosen_config = configList.getSelectionModel().getSelectedItem().getText().toString();
+        	
+        	Platform.runLater(() -> LoaderStatus.setText("Serveriga ühenduse loomine"));
+        	
+    		try {
+    			
+    		ProcessBuilder ps = new ProcessBuilder("openvpn", ovpn_dir + chosen_config);
+    		ps.redirectErrorStream(true);
+    		Process pr = ps.start();  
+
+    		BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+
+    		String line;
+    		while(!((line = in.readLine()) == null)) {
+    			System.out.println(line);
+    			
+    			if(line.contains("Received control message")) {
+    				Platform.runLater(() -> LoaderStatus.setText("Tunneli loomine"));
+    			}
+    			
+    			if(line.contains("route add")) {
+    				Platform.runLater(() -> LoaderStatus.setText("Võrguliikluse ümbersuunamine"));
+    			}
+    			if(line.contains("VERIFY OK:")) {
+    				Platform.runLater(() -> LoaderStatus.setText("Sertifikaadi autentsuse kontrollimine"));
+    			}
+    			if(line.contains("Sequence Completed")) {
+    				Platform.runLater(() -> LoaderStatus.setText("Tunnel edukalt loodud"));
+    				break;
+    			}
+    		}
+    		
+    		//retrieving new IP's
+    		Thread.sleep(1000);
+    		Platform.runLater(() -> LoaderStatus.setText("Kasutajaliidese IP väärtuste uuendamine"));
+    		Thread.sleep(2000);
+    		Platform.runLater(() -> internalIP.setText(Global.getInternalIP()));
+    		Platform.runLater(() -> externalIP.setText(Global.getExternalIP()));
+    		
+    		} catch(Exception kala) {
+    			Platform.runLater(() -> LoaderStatus.setText("Tunneli loomine ebaõnnestus"));
+    			System.exit(0);
+    		}
+    		return null;
+        }
+    };
+    
+    Task<Void> updateIP = new Task<Void>() {
+        @Override public Void call() throws InterruptedException {
+
+        	Thread.sleep(3000);
+    		Platform.runLater(() -> internalIP.setText(Global.getInternalIP()));
+    		Platform.runLater(() -> externalIP.setText(Global.getExternalIP()));
+        	
+    		return null;
+        }
+    };
 
 }

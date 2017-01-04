@@ -21,6 +21,7 @@ public class Global {
 
 			ip = in.readLine(); //gotcha
 			System.out.println("Discovered external ip: " + ip);
+			in.close();
 			
 		} catch(Exception kala) {
 			ip = "N/A";
@@ -34,11 +35,11 @@ public class Global {
 		String ip;
 		try {
 			
-			@SuppressWarnings("resource")
 			final DatagramSocket socket = new DatagramSocket();
 			socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
 			ip = socket.getLocalAddress().getHostAddress();
-
+			socket.close();
+			
 		} catch(Exception kala) {
 			System.out.println("Internal IP error");
 			ip = "127.0.0.1"; //lol

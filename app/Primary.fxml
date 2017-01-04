@@ -17,7 +17,9 @@
       </Label>
       <Label fx:id="internalIP" alignment="TOP_CENTER" contentDisplay="CENTER" layoutY="146.0" prefHeight="16.0" prefWidth="689.0" text="Sisevõrgu IP: 127.0.0.1" />
       <JFXComboBox fx:id="configList" layoutX="97.0" layoutY="211.0" prefHeight="36.0" prefWidth="485.0" promptText="Vali OpenVPN konfiguratsioonifail" />
-      <JFXButton fx:id="connectButton" layoutX="149.0" layoutY="281.0" onAction="#establishConnection" prefHeight="59.0" prefWidth="378.0" ripplerFill="#9f95d7" style="-fx-text-fill:WHITE;-fx-background-color:#5264AE;" text="Loo OpenVPN tunnel" textAlignment="CENTER" textFill="WHITE" />
+      <JFXButton fx:id="connectButton" layoutX="149.0" layoutY="281.0" onAction="#establishConnection" prefHeight="59.0" prefWidth="378.0" ripplerFill="#9f95d7" style="-fx-text-fill:WHITE;-fx-background-color:#7391cc;" text="Loo OpenVPN tunnel" textAlignment="CENTER" textFill="WHITE" />
       <Hyperlink fx:id="ConfLink" layoutX="157.0" layoutY="380.0" onAction="#openConfLink" prefHeight="24.0" prefWidth="353.0" text="Vajuta siia, et avada konfiguratsioonifailide kataloog" />
+      <Label fx:id="plskilme" alignment="CENTER" contentDisplay="CENTER" layoutX="48.0" layoutY="208.0" prefHeight="36.0" prefWidth="579.0" text="Label" />
+      <JFXButton fx:id="terminateOVPN" layoutX="147.0" layoutY="282.0" onAction="#terminateOVPN" prefHeight="59.0" prefWidth="378.0" ripplerFill="#f2efec" style="-fx-text-fill:WHITE;-fx-background-color:#f89940;" text="Katkesta väline VPN ühendus" textFill="WHITE" />
    </children>
 </Pane>

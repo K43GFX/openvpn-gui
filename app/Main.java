@@ -22,6 +22,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("OpenVPN-GUI");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -43,23 +44,23 @@ public class Main extends Application {
 		
 		//checking if openvpn-gui existing
 		if (Files.isDirectory(Paths.get(ovpn_dir))) {
+			
 			//not a first launch
-			  System.out.println(ovpn_dir + " existing");
-			} else {
-				System.out.println(ovpn_dir + " not existing, creating one");
-				try {
-					Files.createDirectories(Paths.get(ovpn_dir));
-					System.out.println(ovpn_dir + " successfully created");
-				} catch(Exception kala) {
-					System.out.println("Could not create conf directory: " + kala);
-					JOptionPane.showMessageDialog(null, "Ei suuda luua vajalikku kataloogi konfiguratsioonifailide jaoks.");
-					System.exit(0);
+			System.out.println(ovpn_dir + " existing");
+		} else {
+			System.out.println(ovpn_dir + " not existing, creating one");
+			try {
+				Files.createDirectories(Paths.get(ovpn_dir));
+				System.out.println(ovpn_dir + " successfully created");
+			} catch(Exception kala) {
+				System.out.println("Could not create conf directory: " + kala);
+				JOptionPane.showMessageDialog(null, "Ei suuda luua vajalikku kataloogi konfiguratsioonifailide jaoks.");
+				System.exit(0);
 					
-				}
 			}
+		}
 		
 		//checking if we have openvpn installed
-		
 		try {
 			
 		ProcessBuilder ps = new ProcessBuilder("which", "openvpn");

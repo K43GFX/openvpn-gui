@@ -2,7 +2,6 @@ package app;
 
 import java.io.File;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -88,23 +87,26 @@ public class PrimaryController {
     
     public boolean ovpnRunning() {
     	
-    	//I usually have vpn tunnel on tun0. Let's check if it's established.
+    	//I usually have vpn tunnel on tun0 or tun0:00. Let's check if it's established.
     	try {
     		NetworkInterface networkInterface = NetworkInterface.getByName("tun0");
+    		NetworkInterface networkInterface_00 = NetworkInterface.getByName("tun0:00");
     		
     		if(networkInterface != null) {
-    			//tun0 already established
-    			System.out.println("tun0 interface established. Fuck.");
-    			return false;
-    		} else {
-    			System.out.println("tun0 interface unused. Good.");
+    			System.out.println("Discovered interface tun0.");
     			return true;
+    		} else if(networkInterface_00 != null) {
+    			System.out.println("Discovered interface tun0:00.");
+    			return true;
+    		} else {
+    			System.out.println("No tun0 or tun0:00 interface found. Good.");
+    			return false;
     		}
     		
 		} catch (Exception kala) {
-			System.out.println("Couldn't get network interfaces");
+			System.out.println("Couldn't get network interfaces: " + kala);
+			return false;
 		}
-    	return true;
     }
 
 }

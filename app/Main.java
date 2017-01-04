@@ -45,7 +45,8 @@ public class Main extends Application {
 					System.out.println(ovpn_dir + " successfully created");
 				} catch(Exception kala) {
 					System.out.println("Could not create conf directory: " + kala);
-					//throwError
+					JOptionPane.showMessageDialog(null, "Ei suuda luua vajalikku kataloogi konfiguratsioonifailide jaoks.");
+					System.exit(0);
 					
 				}
 			}
@@ -78,6 +79,12 @@ public class Main extends Application {
 			System.exit(0);
 		}
 		
+		//So good so far. Let's try to find some IP's now
+		
+		Global.getExternalIP();
+		Global.getInternalIP();
+		
+		//Launch UI
 		System.out.println("Firing up our GUI.");
 		launch();
 	}

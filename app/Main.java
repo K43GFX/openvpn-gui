@@ -63,7 +63,7 @@ public class Main extends Application {
 
 		String line = in.readLine();
 		
-		if(line != "null") {
+		if(line != null) {
 			System.out.println("Openvpn at " + line);
 		} else {
 			System.out.println(line);
@@ -81,8 +81,8 @@ public class Main extends Application {
 		
 		//So good so far. Let's try to find some IP's now
 		
-		Global.getExternalIP();
-		Global.getInternalIP();
+		System.out.println("Discovered external IP " + Global.getExternalIP());
+		System.out.println("Discovered internal IP " + Global.getInternalIP());
 		
 		//Launch UI
 		System.out.println("Firing up our GUI.");

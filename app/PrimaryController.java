@@ -36,16 +36,16 @@ public class PrimaryController {
 	private Label plskilme;
 
 	@FXML
-	private Hyperlink ConfLink;
+	private Hyperlink confLink;
 
 	@FXML
-	private JFXSpinner LoaderSpinner;
+	private JFXSpinner loaderSpinner;
 
 	@FXML
-	private Label LoaderStatus;
+	private Label loaderStatus;
 
 	@FXML
-	private Label LoaderTitle;
+	private Label loaderTitle;
 
 	@FXML
 	private JFXComboBox<Label> configList;
@@ -60,16 +60,16 @@ public class PrimaryController {
 		// hiding unneeded elements
 		connectButton.setVisible(false);
 		configList.setVisible(false);
-		ConfLink.setVisible(false);
+		confLink.setVisible(false);
 
 		// and showing stuff we need
-		LoaderSpinner.setVisible(true);
-		LoaderTitle.setVisible(true);
-		LoaderStatus.setVisible(true);
+		loaderSpinner.setVisible(true);
+		loaderTitle.setVisible(true);
+		loaderStatus.setVisible(true);
 
 		// changing text of labels
-		LoaderTitle.setText("Tunneli loomine serverisse " + chosen_config + "...");
-		LoaderStatus.setText("loon ühendust serveriga");
+		loaderTitle.setText("Tunneli loomine serverisse " + chosen_config + "...");
+		loaderStatus.setText("loon ühendust serveriga");
 
 		// launching openvpn daemon
 		new Thread(ovpnDaemon).start();
@@ -104,9 +104,9 @@ public class PrimaryController {
 		internalIP.setText("Sisevõrgu IP: " + Global.getInternalIP());
 
 		// hiding some items that we don't need at the moment
-		LoaderSpinner.setVisible(false);
-		LoaderTitle.setVisible(false);
-		LoaderStatus.setVisible(false);
+		loaderSpinner.setVisible(false);
+		loaderTitle.setVisible(false);
+		loaderStatus.setVisible(false);
 
 		// checking if OpenVPN running
 
@@ -229,7 +229,7 @@ public class PrimaryController {
 			String ovpn_dir = home_dir + "/.openvpn-gui/";
 			String chosen_config = configList.getSelectionModel().getSelectedItem().getText().toString();
 
-			Platform.runLater(() -> LoaderStatus.setText("Serveriga ühenduse loomine"));
+			Platform.runLater(() -> loaderStatus.setText("Serveriga ühenduse loomine"));
 
 			try {
 
@@ -244,26 +244,26 @@ public class PrimaryController {
 					System.out.println(line);
 
 					if (line.contains("Received control message")) {
-						Platform.runLater(() -> LoaderStatus.setText("Tunneli loomine"));
+						Platform.runLater(() -> loaderStatus.setText("Tunneli loomine"));
 					}
 
 					if (line.contains("route add")) {
-						Platform.runLater(() -> LoaderStatus.setText("Võrguliikluse ümbersuunamine"));
+						Platform.runLater(() -> loaderStatus.setText("Võrguliikluse ümbersuunamine"));
 					}
 					
 					if (line.contains("VERIFY OK:")) {
-						Platform.runLater(() -> LoaderStatus.setText("Sertifikaadi autentsuse kontrollimine"));
+						Platform.runLater(() -> loaderStatus.setText("Sertifikaadi autentsuse kontrollimine"));
 					}
 					
 					if (line.contains("Sequence Completed")) {
-						Platform.runLater(() -> LoaderStatus.setText("Tunnel edukalt loodud"));
+						Platform.runLater(() -> loaderStatus.setText("Tunnel edukalt loodud"));
 						break;
 					}
 				}
 
 				// retrieving new IP's
 				Thread.sleep(1000);
-				Platform.runLater(() -> LoaderStatus.setText("Kasutajaliidese IP väärtuste uuendamine"));
+				Platform.runLater(() -> loaderStatus.setText("Kasutajaliidese IP väärtuste uuendamine"));
 				Thread.sleep(3000);
 				Platform.runLater(() -> internalIP.setText(Global.getInternalIP()));
 				Platform.runLater(() -> externalIP.setText(Global.getExternalIP()));
@@ -271,19 +271,19 @@ public class PrimaryController {
 				Thread.sleep(1000);
 
 				// all set. Let's update interface
-				Platform.runLater(() -> LoaderStatus.setVisible(false));
-				Platform.runLater(() -> LoaderTitle.setVisible(false));
-				Platform.runLater(() -> LoaderSpinner.setVisible(false));
+				Platform.runLater(() -> loaderStatus.setVisible(false));
+				Platform.runLater(() -> loaderTitle.setVisible(false));
+				Platform.runLater(() -> loaderSpinner.setVisible(false));
 				Platform.runLater(() -> connectButton.setVisible(false));
 				Platform.runLater(() -> configList.setVisible(false));
 				Platform.runLater(() -> terminateOVPN.setVisible(true));
 				Platform.runLater(() -> plskilme.setText("Aktiivne ühendus serverisse " + chosen_config));
 				Platform.runLater(() -> terminateOVPN.setText("Katkesta ühendus serveriga"));
 				Platform.runLater(() -> plskilme.setVisible(true));
-				Platform.runLater(() -> ConfLink.setVisible(true));
+				Platform.runLater(() -> confLink.setVisible(true));
 
 			} catch (Exception kala) {
-				Platform.runLater(() -> LoaderStatus.setText("Tunneli loomine ebaõnnestus"));
+				Platform.runLater(() -> loaderStatus.setText("Tunneli loomine ebaõnnestus"));
 				System.exit(0);
 			}
 			return null;

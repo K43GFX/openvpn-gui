@@ -140,6 +140,8 @@ public class PrimaryController{
 		String home_dir = System.getProperty("user.home");
 		String ovpn_dir = home_dir + "/.openvpn-gui/";
 		
+		configList.getItems().clear();
+		
 		File dir = new File(ovpn_dir);
 		File[] cfg_files = dir.listFiles((d, name) -> name.endsWith(".ovpn"));
 		
@@ -266,6 +268,7 @@ public class PrimaryController{
     		Platform.runLater(() -> externalIP.setText(Global.getExternalIP()));
     		
     		Thread.sleep(1000);
+    		
     		//all set. Let's update interface
     		Platform.runLater(() -> LoaderStatus.setVisible(false));
     		Platform.runLater(() -> LoaderTitle.setVisible(false));
@@ -276,6 +279,7 @@ public class PrimaryController{
     		Platform.runLater(() -> plskilme.setText("Aktiivne ühendus serverisse " + chosen_config));
     		Platform.runLater(() -> terminateOVPN.setText("Katkesta ühendus serveriga"));
     		Platform.runLater(() -> plskilme.setVisible(true));
+    		Platform.runLater(() -> ConfLink.setVisible(true));
     		
     		} catch(Exception kala) {
     			Platform.runLater(() -> LoaderStatus.setText("Tunneli loomine ebaõnnestus"));
@@ -294,6 +298,7 @@ public class PrimaryController{
         	
     		return null;
         }
+        
     };
 
 }
